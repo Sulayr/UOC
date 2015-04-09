@@ -1,0 +1,248 @@
+//Definimos de variables y los pines a utilizar
+int ledVerde = 10;
+int ledAmarillo = 11;
+int ledRojo = 12;
+int tiempo = 30;
+int pulsador = 2;
+int repeticion = 8;
+int ntcSensor = 0;
+int motor = 13;
+
+//Definición de los segmentos del display para facilitar la llamada de la funcion display()
+int a = 9;
+int b = 8;
+int c = 7;
+int d = 6;
+int e = 5;
+int f = 4;
+int g = 3;
+
+//Datos para las ecuaciones utilizadas en la medida de temperatura
+float Vin = 5.0;     // [V]       Tensión alimentación del divisor
+float Rfija = 10000;  // [ohm]     Resistencia fija del divisor
+float R25 = 2800;    // [ohm]     Valor de NTC a 25ºC
+float Beta = 3950; // [K]      Parámetro Beta de NTC
+float T0 = 293.15;   // [K]       Temperatura de referencia en Kelvin
+
+float Vout = 0.0;    // [V]       Variable para almacenar Vout
+float Rntc = 0.0;    // [ohm]     Variable para NTC en ohmnios
+
+float TempC = 0.0;   // [ºC]      Temperatura salida en Celsius
+float TempMotor = 28.5; // 
+
+
+
+void setup()
+{
+  Serial.begin(9600);
+  pinMode(ledVerde, OUTPUT);
+  pinMode(ledAmarillo, OUTPUT);
+  pinMode(ledRojo, OUTPUT);
+  pinMode(pulsador, INPUT);
+  pinMode(a, OUTPUT);
+  pinMode(b, OUTPUT);
+  pinMode(c, OUTPUT);
+  pinMode(d, OUTPUT);
+  pinMode(e, OUTPUT);
+  pinMode(f, OUTPUT);
+  pinMode(g, OUTPUT);
+  pinMode(ntcSensor, INPUT);
+  pinMode(motor, OUTPUT);
+}
+
+void encendidoLed()
+{
+  for (tiempo = 30; tiempo >= 0; tiempo--)
+  {
+    if (tiempo <= 33 && tiempo >= 31) {
+      digitalWrite (ledVerde, LOW);
+      digitalWrite (ledRojo, LOW);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+          }
+    else if (tiempo >= 13) {
+      digitalWrite (ledVerde, HIGH);
+      digitalWrite (ledAmarillo, LOW);
+      digitalWrite (ledRojo, LOW);
+      delay(1000);
+    }
+    else if (tiempo <= 12 && tiempo >= 10) {
+      digitalWrite (ledVerde, HIGH);
+      digitalWrite (ledRojo, LOW);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+    }
+    else if (tiempo <= 9 && tiempo >= 3) {
+      digitalWrite (ledVerde, LOW);
+      digitalWrite (ledAmarillo, LOW);
+      digitalWrite (ledRojo, HIGH);
+      delay(1000);
+    }
+    else if (tiempo <= 2 && tiempo >= 1) {
+      digitalWrite (ledVerde, LOW);
+      digitalWrite (ledRojo, HIGH);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+      digitalWrite (ledAmarillo, HIGH);
+      delay(166);
+      digitalWrite (ledAmarillo, LOW);
+      delay(166);
+    }
+    else if (tiempo == 0) {
+      digitalWrite (ledVerde, LOW);
+      digitalWrite (ledRojo, LOW);
+      digitalWrite (ledAmarillo, LOW);
+    }
+  }
+
+}
+
+void display(int a, int b, int c, int d, int e, int f, int g)
+{
+  digitalWrite (9, a);
+  digitalWrite (8, b);
+  digitalWrite (7, c);
+  digitalWrite (6, d);
+  digitalWrite (5, e);
+  digitalWrite (4, f);
+  digitalWrite (3, g);
+}
+
+void mostrarRep(int repeticion)
+{
+  if (repeticion == 9)
+  {
+    display (1, 1, 1, 0, 0, 1, 1);
+  }
+  if (repeticion == 8)
+  {
+    display (1, 1, 1, 1, 1, 1, 1);
+  }
+  if (repeticion == 7)
+  {
+    display (1, 1, 1, 0, 0, 0, 0);
+  }
+  if (repeticion == 6)
+  {
+    display (1, 0, 1, 1, 1, 1, 1);
+  }
+  if (repeticion == 5)
+  {
+    display (1, 0, 1, 1, 0, 1, 1);
+  }
+  if (repeticion == 4)
+  {
+    display (0, 1, 1, 0, 0, 1, 1);
+  }
+  if (repeticion == 3)
+  {
+    display (1, 1, 1, 1, 0, 0, 1);
+  }
+  if (repeticion == 2)
+  {
+    display (1, 1, 0, 1, 1, 0, 1);
+  }
+  if (repeticion == 1)
+  {
+    display (0, 1, 1, 0, 0, 0, 0);
+  }
+  if (repeticion == 0)
+  {
+    display (1, 1, 1, 1, 1, 1, 0);
+  }
+}
+
+void cuentaAtras() {
+  display (1, 1, 1, 0, 0, 1, 1);
+  delay(1000);
+  display (1, 1, 1, 1, 1, 1, 1);
+  delay(1000);
+  display (1, 1, 1, 0, 0, 0, 0);
+  delay(1000);
+  display (1, 0, 1, 1, 1, 1, 1);
+  delay(1000);
+  display (1, 0, 1, 1, 0, 1, 1);
+  delay(1000);
+  display (0, 1, 1, 0, 0, 1, 1);
+  delay(1000);
+  display (1, 1, 1, 1, 0, 0, 1);
+  delay(1000);
+  display (1, 1, 0, 1, 1, 0, 1);
+  delay(1000);
+  display (0, 1, 1, 0, 0, 0, 0);
+  delay(1000);
+  display (1, 1, 1, 1, 1, 1, 0);
+  delay(1000);
+}
+
+void medidaTemperatura () {
+  //Primero la Vout del divisor
+  Vout = (Vin / 1024) * (analogRead(ntcSensor));
+
+  //Ahora la resistencia de la NTC
+  Rntc = (Vout * Rfija) / (Vin - Vout);
+
+  //Y por último la temperatura en Celsius
+  TempC = (Beta / (log(Rntc / R25) + (Beta / T0)) - 273.15);
+
+  if (TempC<=TempMotor){
+  Serial.println();
+  Serial.print("La temperatura del sensor NTC es de ");
+  Serial.print(TempC);
+  Serial.println(" grados centigrados.");
+  Serial.println();
+  }
+  else {
+  Serial.println();
+  Serial.print("La temperatura del sensor NTC es de ");
+  Serial.print(TempC);
+  Serial.println(" grados centigrados");
+  Serial.println();
+  Serial.print("El sistema de refrigeración se ha encendido.");
+    }
+}
+
+void loop()
+{
+  if (digitalRead(pulsador) == HIGH) {
+    digitalWrite(motor, HIGH);
+        for (repeticion = 9; repeticion >= 0; repeticion--) {
+      {
+        medidaTemperatura();
+        if (repeticion == 9) {
+          cuentaAtras();
+        }
+        else if (repeticion <= 8) {
+          mostrarRep(repeticion);
+          encendidoLed();
+        }
+      }
+    }
+  }
+}
